@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "esModuleInterop": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "outDir": "./dist",
+    "baseUrl": "./src",
+    "paths": {
+      "enum/*": ["./enum/*"],
+      "adapters/*": ["./adapters/*"],
+      "config/*": ["./config/*"],
+      "types/*": ["./types/*"]
+    }
+  },
+
+  "include": ["./src/**/*", "./test/**/*"]
+}

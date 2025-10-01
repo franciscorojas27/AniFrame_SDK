@@ -1,0 +1,25 @@
+{
+  "name": "scraper",
+  "version": "1.0.0",
+  "description": "plugin to scrappe web pages",
+  "main": "./src/cindex.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "cross-env PLAYWRIGHT_BROWSERS_PATH=0 tsx watch --env-file=.env ./src/index.ts",
+    "test": "vitest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.17.1",
+  "dependencies": {
+    "playwright": "^1.55.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "cross-env": "^7.0.3",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}
