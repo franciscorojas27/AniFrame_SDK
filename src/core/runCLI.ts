@@ -1,6 +1,5 @@
-import { Genero } from "../enum/filter.js";
-import { AnimeScraper } from "./animeScraperClass.js";
-
+import { Genero } from "../enum/filter.ts";
+import { AnimeScraper } from "./animeScraper.ts";
 export class RunCLI {
   async run() {
     const scraper = await AnimeScraper.create();

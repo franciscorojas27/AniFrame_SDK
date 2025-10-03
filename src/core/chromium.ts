@@ -1,5 +1,5 @@
 import { BrowserContext, chromium } from "playwright";
-import config from "../config/config.js";
+import config from "../config/config.ts";
 
 async function createContext(): Promise<BrowserContext> {
   const browser = await chromium.launch({

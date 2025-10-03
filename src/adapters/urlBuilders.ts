@@ -5,6 +5,7 @@ interface UrlBuilderClass {
   withQuery(query?: string): this;
   withPage(page?: string): this;
   withFilters(filter?: Filter): this;
+  addPath(path: string): this;
   build(): URL;
 }
 
@@ -24,7 +25,10 @@ export class UrlBuilder implements UrlBuilderClass {
     if (page) this.url.searchParams.set(ParamsSupport.page, page);
     return this;
   }
-
+  addPath(path: string): this {
+    this.url.pathname += path;
+    return this;
+  }
   withFilters(filter?: Filter): this {
     if (filter) {
       if (filter.category)

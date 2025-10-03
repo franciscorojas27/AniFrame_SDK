@@ -1,0 +1,115 @@
+import { animeCountSolution } from "../adapters/libs.ts";
+import { UrlBuilder } from "../adapters/urlBuilders.ts";
+import config from "../config/config.ts";
+import { AnimeSelectors } from "../enum/selectors.ts";
+import { AnimeListScraperAgreement, responseAnimeResult } from "../types/agreement.ts";
+import { anime, animeCatalog } from "../types/anime.ts";
+import { Filter } from "../types/filter.ts";
+import AnimeScraper from "./AnimeScraper.ts";
+export default class AnimeListScraper implements AnimeListScraperAgreement {
+  constructor(private scraper: AnimeScraper) {}
+
+  async getHomePageListAnime(): Promise<anime[]> {
+    await this.scraper.page.goto(config.urlPage, {
+      waitUntil: "domcontentloaded",
+    });
+
+    const articles = this.scraper.page.locator(AnimeSelectors.HomeArticles);
+
+    const count = await articles.count();
+    const result: anime[] = [];
+
+    for (let i = 0; i < count; i++) {
+      let [name, url, urlImg, cap] = await Promise.all([
+        articles.nth(i).locator(AnimeSelectors.HomeName).innerText(),
+        articles.nth(i).locator(AnimeSelectors.HomeLink).getAttribute("href"),
+        articles.nth(i).locator(AnimeSelectors.HomeImg).getAttribute("src"),
+        articles.nth(i).locator(AnimeSelectors.HomeCap).innerText(),
+      ]);
+      url = url ? new UrlBuilder(url).build().toString() : "";
+      urlImg = urlImg ? urlImg : "";
+
+      result.push({ name, url, urlImg, cap });
+    }
+    return result;
+  }
+
+  async getSearchAnimeResults(
+    query?: string,
+    numberPage?: string,
+    filter?: Filter
+  ): Promise<responseAnimeResult> {
+    try {
+      const url = new UrlBuilder("/catalogo")
+        .withQuery(query)
+        .withPage(numberPage)
+        .withFilters(filter)
+        .build();
+      await this.scraper.page.goto(url.toString(), {
+        waitUntil: "domcontentloaded",
+      });
+      const articles = this.scraper.page.locator(AnimeSelectors.SearchArticle);
+      const numberPages = await animeCountSolution(this.scraper.page);
+      const count = await articles.count();
+      const result: animeCatalog[] = [];
+
+      for (let i = 0; i < count; i++) {
+        let [name, url, urlImg] = await Promise.all([
+          articles.nth(i).locator(AnimeSelectors.SearchName).innerText(),
+          articles
+            .nth(i)
+            .locator(AnimeSelectors.SearchLink)
+            .getAttribute("href"),
+          articles.nth(i).locator(AnimeSelectors.SearchImg).getAttribute("src"),
+        ]);
+
+        url = url ? new UrlBuilder(url).build().toString() : "";
+
+        result.push({ name, url, urlImg });
+      }
+      return { results: result as animeCatalog[], numberPages };
+    } catch (error) {
+      console.log(error);
+      return { results: [], numberPages: "0" };
+    }
+  }
+
+  async getCatalogListAnime(
+    filter?: Filter,
+    numberPage?: string
+  ): Promise<responseAnimeResult> {
+    try {
+      const url = new UrlBuilder("/catalogo")
+        .withPage(numberPage)
+        .withFilters(filter)
+        .build();
+      await this.scraper.page.goto(url.toString(), {
+        waitUntil: "domcontentloaded",
+      });
+      const numberPages = await animeCountSolution(this.scraper.page);
+      const articles = this.scraper.page.locator(AnimeSelectors.CatalogArticle);
+      const count = await articles.count();
+      const result: animeCatalog[] = [];
+      for (let i = 0; i < count; i++) {
+        let [name, url, urlImg] = await Promise.all([
+          articles.nth(i).locator(AnimeSelectors.CatalogName).innerText(),
+          articles
+            .nth(i)
+            .locator(AnimeSelectors.CatalogLink)
+            .getAttribute("href"),
+          articles
+            .nth(i)
+            .locator(AnimeSelectors.CatalogImg)
+            .getAttribute("src"),
+        ]);
+        url = url ? new UrlBuilder(url).build().toString() : "";
+
+        result.push({ name, url, urlImg });
+      }
+      return { results: result as animeCatalog[], numberPages };
+    } catch (error) {
+      console.log(error);
+      return { results: [], numberPages: "0" };
+    }
+  }
+}
