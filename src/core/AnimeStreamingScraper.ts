@@ -1,6 +1,7 @@
 import { Response } from "playwright";
-import { responseM3U8 } from "../types/agreement.ts";
-import AnimeScraper from "./AnimeScraper.ts";
+import { responseM3U8 } from "../types/responseAgreement.js";
+import { logScraperError } from "../errors/errorsHelpers.js";
+import AnimeScraper from "./AnimeScraper.js";
 
 export default class AnimeStreamingScraper {
   constructor(private scraper: AnimeScraper) {}
@@ -23,9 +24,13 @@ export default class AnimeStreamingScraper {
     try {
       await this.scraper.page.goto(url, { waitUntil: "networkidle" });
       await this.scraper.page.waitForTimeout(3000);
-    } catch (e) {}
-
-    await this.scraper.page.close();
+    } catch (err) {
+      logScraperError(err);
+    } finally {
+      try {
+        await this.scraper.page.close();
+      } catch {}
+    }
     const parts = url.split("/");
     const cap = parts[parts.length - 1];
     return { foundUrl, cap };

@@ -1,50 +1,68 @@
-import config from "../config/config.ts";
-import { extractIdfromUrl } from "../adapters/libs.ts";
-import { ErrorMessages } from "../enum/errorsEnum.ts";
-import { AnimeSelectors } from "../enum/selectors.ts";
-import { ScraperError } from "../Error/errorClass.ts";
-import { throwIfNoData, throwIfParsingError } from "../Error/errorsHelpers.ts";
+import config from "../config/config.js";
+import { extractIdfromUrl } from "../adapters/libs.js";
+import { AnimeSelectors } from "../enums/selectors.js";
 import {
-  AnimeDetailsScraperAgreement,
+  throwIfNoData,
+  throwIfParsingError,
+  logScraperError,
+} from "../errors/errorsHelpers.js";
+import { AnimeDetailsScraperAgreement } from "../types/agreement.js";
+import {
   responseAnimeDetails,
   responseEpisode,
-} from "../types/agreement.ts";
-import AnimeScraper from "./AnimeScraper.ts";
+} from "../types/responseAgreement.js";
+import AnimeScraper from "./AnimeScraper.js";
 
 export default class AnimeDetailsScraper
   implements AnimeDetailsScraperAgreement
 {
   constructor(private scraper: AnimeScraper) {}
   async getAnimeDetails(animeUrl: string): Promise<responseAnimeDetails> {
-    await this.scraper.page.goto(animeUrl, { waitUntil: "domcontentloaded" });
-    const heroInfo = this.scraper.page.locator(AnimeSelectors.DetailsHero);
+    try {
+      await this.scraper.page.goto(animeUrl, { waitUntil: "domcontentloaded" });
+      const heroInfo = this.scraper.page.locator(AnimeSelectors.DetailsHero);
 
-    let [name, spans, genres, description, urlImg, caps] = await Promise.all([
-      heroInfo.locator(AnimeSelectors.DetailsName).innerText(),
-      heroInfo.locator(AnimeSelectors.DetailsSpans).allInnerTexts(),
-      heroInfo.locator(AnimeSelectors.DetailsGenres).allInnerTexts(),
-      heroInfo.locator(AnimeSelectors.DetailsDescription).innerText(),
-      this.scraper.page.locator(AnimeSelectors.DetailsImg).getAttribute("src"),
-      this.scraper.page.locator(AnimeSelectors.DetailsCapsArticles).count(),
-    ]);
+      let [name, spans, genres, description, urlImg, caps] = await Promise.all([
+        heroInfo.locator(AnimeSelectors.DetailsName).innerText(),
+        heroInfo.locator(AnimeSelectors.DetailsSpans).allInnerTexts(),
+        heroInfo.locator(AnimeSelectors.DetailsGenres).allInnerTexts(),
+        heroInfo.locator(AnimeSelectors.DetailsDescription).innerText(),
+        this.scraper.page
+          .locator(AnimeSelectors.DetailsImg)
+          .getAttribute("src"),
+        this.scraper.page.locator(AnimeSelectors.DetailsCapsArticles).count(),
+      ]);
 
-    const date = spans[2];
-    const status = spans[6]
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase();
-    genres = genres.map((str) => str.trim());
-    const idAnime = extractIdfromUrl(urlImg);
-    return {
-      idAnime,
-      name,
-      description,
-      genres,
-      date,
-      status,
-      caps,
-      urlImg,
-    };
+      const date = spans[2];
+      const status = spans[6]
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+      genres = genres.map((str) => str.trim());
+      const idAnime = extractIdfromUrl(urlImg);
+      return {
+        idAnime,
+        name,
+        description,
+        genres,
+        date,
+        status,
+        caps,
+        urlImg,
+      };
+    } catch (err) {
+      logScraperError(err);
+      return {
+        idAnime: undefined,
+        name: "",
+        urlImg: null,
+        description: null,
+        status: "",
+        date: "",
+        genres: [],
+        caps: 0,
+      };
+    }
   }
   async getEpisodeList(url: string): Promise<responseEpisode[] | undefined> {
     try {
@@ -68,8 +86,7 @@ export default class AnimeDetailsScraper
       );
       return episodes;
     } catch (err) {
-      if (err instanceof ScraperError) console.log(err.code);
-      else console.log(ErrorMessages.NETWORK_ERROR);
+      logScraperError(err);
       return undefined;
     }
   }

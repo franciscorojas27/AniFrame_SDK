@@ -1,6 +1,6 @@
-import { Filter } from "../types/filter.ts";
-import config from "../config/config.ts";
-import { FilterSupport, ParamsSupport } from "../enum/filter.ts";
+import { Filter } from "../types/filter.js";
+import config from "../config/config.js";
+import { FilterSupport, ParamsSupport } from "../enums/filter.js";
 interface UrlBuilderClass {
   withQuery(query?: string): this;
   withPage(page?: string): this;

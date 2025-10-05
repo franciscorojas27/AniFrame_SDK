@@ -1,5 +1,5 @@
 enum Category {
-  Serie = "serie",
+  Serie = "tv-anime",
   Pelicula = "pelicula",
 }
 

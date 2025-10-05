@@ -2,23 +2,39 @@
   "name": "scraper",
   "version": "1.0.0",
   "description": "plugin to scrappe web pages",
-  "main": "./src/cindex.ts",
+  "main": "./dist/index.js",
   "type": "module",
   "scripts": {
-    "dev": "cross-env PLAYWRIGHT_BROWSERS_PATH=0 tsx watch --env-file=.env ./src/index.ts",
-    "test": "vitest"
+    "dev": "cross-env NODE_ENV=development PLAYWRIGHT_BROWSERS_PATH=0 tsx watch --env-file=.env ./src/index.ts",
+    "test": "vitest",
+    "start": "node --env-file=.env ./dist/index.js",
+    "build:tsc": "tsc",
+    "build:ncc": "ncc build ./src/index.ts -o ./dist",
+    "build:deno": "deno compile --target x86_64-pc-windows-msvc --allow-read --allow-write --allow-run --allow-env --allow-sys --allow-net ./dist/index.js --output ./dist/distribution.exe"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "scraper",
+    "plugin",
+    "web",
+    "scrape",
+    "playwright",
+    "automation",
+    "headless",
+    "anime"
+  ],
+  "author": "Francisco Rojas",
   "license": "ISC",
   "packageManager": "pnpm@10.17.1",
   "dependencies": {
     "playwright": "^1.55.1",
-    "cross-spawn": "^7.0.3"
+    "yargs": "^18.0.0"
   },
   "devDependencies": {
     "@types/node": "^24.5.2",
+    "@types/yargs": "^17.0.33",
+    "@vercel/ncc": "^0.38.4",
     "cross-env": "^7.0.3",
+    "cross-spawn": "^7.0.3",
     "tsx": "^4.20.6",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"

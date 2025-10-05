@@ -1,12 +1,7 @@
-import AnimeListScraper from "./core/AnimeListScraper.ts";
-import AnimeScraper from "./core/AnimeScraper.ts";
+import { RunCLI } from "./core/RunCLI.js";
 
 async function main() {
-  const animeScraperMain = await AnimeScraper.create();
-
-  const listHome = new AnimeListScraper(animeScraperMain);
-  const homeData = await listHome.getHomePageListAnime();
-  console.log(homeData);
+  const cli = await RunCLI.run();
+  cli.parseArgs();
 }
-
-await main();
+main();

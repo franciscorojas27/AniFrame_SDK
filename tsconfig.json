@@ -1,22 +1,13 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "NodeNext",
-    "moduleResolution": "nodenext",
+    "target": "es2024",
+    "module": "es2022",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
-    "allowImportingTsExtensions": true,
-    "noEmit": true,
-    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist",
     "strict": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "paths": {
-      "enum/*": ["./enum/*"],
-      "adapters/*": ["./adapters/*"],
-      "config/*": ["./config/*"],
-      "types/*": ["./types/*"]
-    }
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
   },
-
-  "include": ["./src/**/*", "./test/**/*"]
+  "include": ["./src/**/*", "wrapper.js"]
 }

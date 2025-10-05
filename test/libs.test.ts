@@ -1,6 +1,6 @@
-import { animeCountSolution } from "adapters/libs.ts";
-import config from "config/config.ts";
 import { describe, it, expect, vi } from "vitest";
+import config from "../src/config/config.js";
+import { animeCountSolution } from "../src/adapters/libs.js";
 describe("animeCountSolution", () => {
   it("calcula correctamente las páginas", async () => {
     const mockPage = {

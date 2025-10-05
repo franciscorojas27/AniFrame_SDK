@@ -1,4 +1,4 @@
-import { ErrorMessages } from "../enum/errorsEnum.ts";
+import { ErrorMessages } from "../enums/errorsEnum.js";
 export class ScraperError extends Error {
     constructor(public code: ErrorMessages,) {
 

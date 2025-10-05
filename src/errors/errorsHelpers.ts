@@ -1,5 +1,5 @@
-import { ScraperError } from "./errorClass.ts";
-import { ErrorMessages } from "enum/errorsEnum.ts";
+import { ScraperError } from "./errorClass.js";
+import { ErrorMessages } from "../enums/errorsEnum.js";
 
 export function throwIfNoData(count: number): void {
   if (count === 0) {
@@ -14,4 +14,9 @@ export function throwIfParsingError(
   if (!href || !src) {
     throw new ScraperError(ErrorMessages.PARSING_ERROR);
   }
+}
+
+export function logScraperError(err: unknown): void {
+  if (err instanceof ScraperError) console.log(err.code);
+  else console.log(ErrorMessages.NETWORK_ERROR);
 }

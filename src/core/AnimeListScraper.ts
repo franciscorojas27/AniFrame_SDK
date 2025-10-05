@@ -1,37 +1,44 @@
-import { animeCountSolution } from "../adapters/libs.ts";
-import { UrlBuilder } from "../adapters/urlBuilders.ts";
-import config from "../config/config.ts";
-import { AnimeSelectors } from "../enum/selectors.ts";
-import { AnimeListScraperAgreement, responseAnimeResult } from "../types/agreement.ts";
-import { anime, animeCatalog } from "../types/anime.ts";
-import { Filter } from "../types/filter.ts";
-import AnimeScraper from "./AnimeScraper.ts";
+import { animeCountSolution, extractIdfromUrl } from "../adapters/libs.js";
+import { UrlBuilder } from "../adapters/urlBuilders.js";
+import config from "../config/config.js";
+import { AnimeSelectors } from "../enums/selectors.js";
+import { AnimeListScraperAgreement } from "../types/agreement.js";
+import { logScraperError } from "../errors/errorsHelpers.js";
+import { responseAnimeResult } from "../types/responseAgreement.js";
+import { anime, animeCatalog } from "../types/anime.js";
+import { Filter } from "../types/filter.js";
+import AnimeScraper from "./AnimeScraper.js";
 export default class AnimeListScraper implements AnimeListScraperAgreement {
   constructor(private scraper: AnimeScraper) {}
 
   async getHomePageListAnime(): Promise<anime[]> {
-    await this.scraper.page.goto(config.urlPage, {
-      waitUntil: "domcontentloaded",
-    });
+    try {
+      await this.scraper.page.goto(config.urlPage, {
+        waitUntil: "domcontentloaded",
+      });
 
-    const articles = this.scraper.page.locator(AnimeSelectors.HomeArticles);
+      const articles = this.scraper.page.locator(AnimeSelectors.HomeArticles);
 
-    const count = await articles.count();
-    const result: anime[] = [];
+      const count = await articles.count();
+      const result: anime[] = [];
 
-    for (let i = 0; i < count; i++) {
-      let [name, url, urlImg, cap] = await Promise.all([
-        articles.nth(i).locator(AnimeSelectors.HomeName).innerText(),
-        articles.nth(i).locator(AnimeSelectors.HomeLink).getAttribute("href"),
-        articles.nth(i).locator(AnimeSelectors.HomeImg).getAttribute("src"),
-        articles.nth(i).locator(AnimeSelectors.HomeCap).innerText(),
-      ]);
-      url = url ? new UrlBuilder(url).build().toString() : "";
-      urlImg = urlImg ? urlImg : "";
+      for (let i = 0; i < count; i++) {
+        let [name, url, urlImg, cap] = await Promise.all([
+          articles.nth(i).locator(AnimeSelectors.HomeName).innerText(),
+          articles.nth(i).locator(AnimeSelectors.HomeLink).getAttribute("href"),
+          articles.nth(i).locator(AnimeSelectors.HomeImg).getAttribute("src"),
+          articles.nth(i).locator(AnimeSelectors.HomeCap).innerText(),
+        ]);
+        url = url ? new UrlBuilder(url).build().toString() : "";
+        urlImg = urlImg ? urlImg : "";
 
-      result.push({ name, url, urlImg, cap });
+        result.push({ name, url, urlImg, cap });
+      }
+      return result;
+    } catch (error) {
+      logScraperError(error);
+      return [];
     }
-    return result;
   }
 
   async getSearchAnimeResults(
@@ -64,12 +71,12 @@ export default class AnimeListScraper implements AnimeListScraperAgreement {
         ]);
 
         url = url ? new UrlBuilder(url).build().toString() : "";
-
-        result.push({ name, url, urlImg });
+        let animeId = extractIdfromUrl(url);
+        result.push({ animeId, name, url, urlImg });
       }
       return { results: result as animeCatalog[], numberPages };
     } catch (error) {
-      console.log(error);
+      logScraperError(error);
       return { results: [], numberPages: "0" };
     }
   }
@@ -103,12 +110,12 @@ export default class AnimeListScraper implements AnimeListScraperAgreement {
             .getAttribute("src"),
         ]);
         url = url ? new UrlBuilder(url).build().toString() : "";
-
-        result.push({ name, url, urlImg });
+        let animeId = extractIdfromUrl(urlImg);
+        result.push({ animeId, name, url, urlImg });
       }
       return { results: result as animeCatalog[], numberPages };
     } catch (error) {
-      console.log(error);
+      logScraperError(error);
       return { results: [], numberPages: "0" };
     }
   }

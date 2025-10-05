@@ -5,12 +5,12 @@ export enum AnimeSelectors {
   HomeImg = "div > figure > img",
   HomeCap = ".bg-line.text-subs.rounded > span",
 
-  SearchArticle = ".div.grid.grid-cols-2.gap-4 article",
+  SearchArticle = ".grid.grid-cols-2.gap-4 article",
   SearchName = "header h3",
   SearchLink = "a",
   SearchImg = "figure img",
 
-  CatalogArticle = ".div.grid.grid-cols-2 article",
+  CatalogArticle = ".grid.grid-cols-2 article",
   CatalogName = "header h3",
   CatalogLink = "a",
   CatalogImg = "figure img",

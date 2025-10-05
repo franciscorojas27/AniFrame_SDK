@@ -1,6 +1,6 @@
 import { BrowserContext, Page } from "playwright";
-import createContext from "./Chromium.ts";
-import { AnimeScraperAgreement } from "../types/agreement.ts";
+import createContext from "./Chromium.js";
+import { AnimeScraperAgreement } from "../types/agreement.js";
 export default class AnimeScraper implements AnimeScraperAgreement {
   readonly page: Page;
   readonly context: BrowserContext;

@@ -1,4 +1,4 @@
-import { Genero, Status, Category } from "./enum/filter.js";
+import { Genero, Status, Category } from "./enums/filter.js";
 import { manifestAgreement } from "./types/agreement.js";
 
 const manifest: manifestAgreement = {

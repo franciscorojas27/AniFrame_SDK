@@ -1,6 +1,6 @@
 import { Page } from "playwright";
-import config from "../config/config.ts";
-import { AnimeSelectors } from "../enum/selectors.ts";
+import config from "../config/config.js";
+import { AnimeSelectors } from "../enums/selectors.js";
 
 export const extractIdfromUrl = (url: string | null): string => {
   if (!url) return "";
@@ -12,7 +12,7 @@ export const extractIdfromUrl = (url: string | null): string => {
   );
 };
 
-export const animeCountSolution = async (page: Page): Promise<String> => {
+export const animeCountSolution = async (page: Page): Promise<string> => {
   const animeCountText = await page
     .locator(AnimeSelectors.animeCount)
     .innerText()

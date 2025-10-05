@@ -1,10 +1,12 @@
 import { BrowserContext, chromium } from "playwright";
-import config from "../config/config.ts";
+import config from "../config/config.js";
 
 async function createContext(): Promise<BrowserContext> {
-  const browser = await chromium.launch({
-    headless: Boolean(config.browserHeadless),
-  });
+  const launchChromium = (options?: any) => {
+    return chromium.launch({ ...options, headless: true });
+  };
+
+  const browser = await launchChromium();
   const context = await browser.newContext({
     viewport: null,
     userAgent: config.userAgent,

@@ -1,7 +1,7 @@
 import { UrlBuilder } from "../src/adapters/urlBuilders.js";
 import config from "../src/config/config.js";
 import { expect, describe, it } from "vitest";
-import { FilterSupport, ParamsSupport } from "../src/enum/filter.js";
+import { FilterSupport, ParamsSupport } from "../src/enums/filter.js";
 
 describe("UrlBuilder", () => {
   const basePath = "/anime";

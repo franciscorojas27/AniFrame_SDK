@@ -6,6 +6,7 @@ export type anime = {
 };
 
 export type animeCatalog = {
+  animeId: string;
   name: string;
   url: string;
   urlImg: string | null;
@@ -19,4 +20,11 @@ export interface AnimeScheduleItem {
   updateTimeAnime: string | null;
 }
 
-export type WeekDay = "lunes" | "martes" | "miercoles" | "jueves" | "viernes" | "sabado" | "domingo";
+export type WeekDay =
+  | "lunes"
+  | "martes"
+  | "miercoles"
+  | "jueves"
+  | "viernes"
+  | "sabado"
+  | "domingo";
