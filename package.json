@@ -8,9 +8,7 @@
     "dev": "cross-env NODE_ENV=development PLAYWRIGHT_BROWSERS_PATH=0 tsx watch --env-file=.env ./src/index.ts",
     "test": "vitest",
     "start": "node --env-file=.env ./dist/index.js",
-    "build:tsc": "tsc",
-    "build:ncc": "ncc build ./src/index.ts -o ./dist",
-    "build:deno": "deno compile --target x86_64-pc-windows-msvc --allow-read --allow-write --allow-run --allow-env --allow-sys --allow-net ./dist/index.js --output ./dist/distribution.exe"
+    "build": "node ./build.js"
   },
   "keywords": [
     "scraper",
