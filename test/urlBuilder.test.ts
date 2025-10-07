@@ -42,7 +42,7 @@ describe("UrlBuilder", () => {
 
   it("debe encadenar métodos correctamente", () => {
     const filter = {
-      category: "OVA",
+      category: "tv-anime",
       genre: ["Comedy"],
       status: "En emisión",
     };
