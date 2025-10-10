@@ -139,13 +139,17 @@ export class RunCLI {
         },
         async (argv) => {
           console.log(
-            await this.animeListScraper.getCatalogListAnime(
-              {
-                genre: ArgumentsFilter.validateGenres(argv.genres),
-                status: argv.status as Status,
-                category: argv.category as Category,
-              },
-              argv.page
+            JSON.stringify(
+              await this.animeListScraper.getCatalogListAnime(
+                {
+                  genre: ArgumentsFilter.validateGenres(argv.genres),
+                  status: argv.status as Status,
+                  category: argv.category as Category,
+                },
+                argv.page
+              ),
+              null,
+              2
             )
           );
         }
@@ -155,7 +159,13 @@ export class RunCLI {
         "Get anime home page list",
         () => {},
         async () => {
-          console.log(await this.animeListScraper.getHomePageListAnime());
+          console.log(
+            JSON.stringify(
+              await this.animeListScraper.getHomePageListAnime(),
+              null,
+              2
+            )
+          );
         }
       )
       .command(
@@ -172,7 +182,13 @@ export class RunCLI {
           });
         },
         async (argv) => {
-          console.log(await this.animeDetailsScraper.getEpisodeList(argv.url));
+          console.log(
+            JSON.stringify(
+              await this.animeDetailsScraper.getEpisodeList(argv.url),
+              null,
+              2
+            )
+          );
         }
       )
       .command(
@@ -190,7 +206,13 @@ export class RunCLI {
         },
         async (argv) => {
           console.log(
-            await this.animeDetailsScraper.getAnimeDetails(argv.url as string)
+            JSON.stringify(
+              await this.animeDetailsScraper.getAnimeDetails(
+                argv.url as string
+              ),
+              null,
+              2
+            )
           );
         }
       )
@@ -199,7 +221,13 @@ export class RunCLI {
         "Get anime schedule",
         () => {},
         async () => {
-          console.log(await this.animeScheduleScraper.getAnimeSchedule());
+          console.log(
+            JSON.stringify(
+              await this.animeScheduleScraper.getAnimeSchedule(),
+              null,
+              2
+            )
+          );
         }
       )
       .command(
@@ -218,7 +246,11 @@ export class RunCLI {
         },
         async (argv) => {
           console.log(
-            await this.animeStreamingScraper.getM3U8(argv.url as string)
+            JSON.stringify(
+              await this.animeStreamingScraper.getM3U8(argv.url as string),
+              null,
+              2
+            )
           );
         }
       )
