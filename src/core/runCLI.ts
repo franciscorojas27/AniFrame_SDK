@@ -36,7 +36,6 @@ export class RunCLI {
     await cli.init();
     return cli;
   }
-
   parseArgs() {
     return this.args
       .exitProcess(false)
@@ -51,7 +50,6 @@ export class RunCLI {
               alias: "q",
               demandOption: true,
               requiresArg: true,
-              normalize: true,
               string: true,
             })
             .option("genres", {
@@ -98,6 +96,7 @@ export class RunCLI {
               }
             )
           );
+          process.exit(1);
         }
       )
       .command(
@@ -152,6 +151,7 @@ export class RunCLI {
               2
             )
           );
+          process.exit(1);
         }
       )
       .command(
@@ -166,6 +166,7 @@ export class RunCLI {
               2
             )
           );
+          process.exit(1);
         }
       )
       .command(
@@ -184,11 +185,14 @@ export class RunCLI {
         async (argv) => {
           console.log(
             JSON.stringify(
-              await this.animeDetailsScraper.getEpisodeList(argv.url),
+              (await this.animeDetailsScraper.getEpisodeList(argv.url)) || {
+                error: 404,
+              },
               null,
               2
             )
           );
+          process.exit(1);
         }
       )
       .command(
@@ -214,6 +218,7 @@ export class RunCLI {
               2
             )
           );
+          process.exit(1);
         }
       )
       .command(
@@ -228,6 +233,7 @@ export class RunCLI {
               2
             )
           );
+          process.exit(1);
         }
       )
       .command(
@@ -240,7 +246,6 @@ export class RunCLI {
             alias: "u",
             demandOption: true,
             requiresArg: true,
-            normalize: true,
             string: true,
           });
         },
@@ -252,6 +257,7 @@ export class RunCLI {
               2
             )
           );
+          process.exit(1);
         }
       )
       .strictCommands()

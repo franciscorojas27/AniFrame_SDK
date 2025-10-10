@@ -49,8 +49,16 @@ function continueBuild() {
   }
 
   if (!fs.existsSync(path.join(DIST_DIR, "node_modules"))) {
-    exec("pnpm exec deno install", (err) => {
-      if (err) console.error("[build] Deno install failed:", err);
+    const denoCommand =
+      "deno install --allow-net --allow-read -n my-builder ./build.ts";
+
+    exec(denoCommand, { cwd: DIST_DIR }, (err, stdout, stderr) => {
+      if (err) {
+        console.error("[build] Deno install failed:", err);
+        console.error("Stderr:", stderr);
+        return;
+      }
+      console.log("[build] Deno install successful.");
     });
   }
 
