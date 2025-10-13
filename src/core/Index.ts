@@ -1,7 +1,7 @@
-export { default as AnimeScraper } from "./AnimeScraper.js";
-export { default as AnimeListScraper } from "./AnimeListScraper.js";
-export { default as AnimeDetailsScraper } from "./AnimeDetailsScraper.js";
-export { default as AnimeScheduleScraper } from "./AnimeScheduleScraper.js";
-export { default as AnimeStreamingScraper } from "./AnimeStreamingScraper.js";
-export { RunCLI } from "./RunCLI.js";
+export { default as AnimeScraper } from "./AnimeScraper";
+export { default as AnimeListScraper } from "./AnimeListScraper";
+export { default as AnimeDetailsScraper } from "./AnimeDetailsScraper";
+export { default as AnimeScheduleScraper } from "./AnimeScheduleScraper";
+export { default as AnimeStreamingScraper } from "./AnimeStreamingScraper";
+
 

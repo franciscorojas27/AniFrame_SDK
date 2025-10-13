@@ -10,7 +10,7 @@ import AnimeScraper from "./AnimeScraper.js";
 export default class AnimeScheduleScraper implements AnimeScheduleScraperAgreement {
   constructor(private scraper: AnimeScraper) {}
   async getAnimeSchedule(): Promise<responseAnimeSchedule> {
-    try {
+    try { // ✅ Esperar que termine
       const url = new UrlBuilder("/horario").build().toString();
       await this.scraper.page.goto(url, { waitUntil: "domcontentloaded" });
       const buttons = this.scraper.page.locator(

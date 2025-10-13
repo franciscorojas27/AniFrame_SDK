@@ -1,82 +1,36 @@
 import { exec } from "child_process";
 import fs from "fs";
 import path from "path";
+const pkg = JSON.parse(fs.readFileSync("./package.json", "utf8"));
 
-const PLUGIN_NAME = process.env.PLUGIN_NAME ?? "animeav1";
-const TEMP_EXE = "./dist.exe";
 const DIST_DIR = "./dist";
 const ENTRY_FILE = "./src/index.ts";
-const OUTPUT_JS = path.join(DIST_DIR, "index.js");
-const OUTPUT_EXE = path.join(DIST_DIR, `${PLUGIN_NAME}.exe`);
-const LOCK_FILE = "./deno.lock";
 exec(
-  `pnpm exec ncc build ${ENTRY_FILE} -o ${DIST_DIR}`,
+  `pnpm exec ncc build ${ENTRY_FILE} -o ${DIST_DIR} -m -C`,
   (error, stdout, stderr) => {
-    if (error)
+    if (error) {
       return console.error(`[build] NCC build error: ${error.message}`);
-    if (stderr) console.error(`[build] NCC stderr: ${stderr}`);
+    }
+    if (stderr) {
+      console.error(`[build] NCC stderr: ${stderr}`);
+    }
     console.log(`[build] NCC stdout: ${stdout}`);
 
+    const indexJsPath = path.join(DIST_DIR, "index.js");
     try {
-      let code = fs.readFileSync(OUTPUT_JS, "utf-8");
-      code = code.replace(/__dirname/g, "import.meta.url");
-      fs.writeFileSync(OUTPUT_JS, code);
+      let value = fs.readFileSync(indexJsPath, { encoding: "utf-8" });
+      value = value.replaceAll("__dirname", "import.meta.url");
+      fs.writeFileSync(indexJsPath, value);
+      fs.renameSync(
+        path.join(DIST_DIR, `index.js`),
+        path.join(DIST_DIR, `${pkg.name}.js`)
+      );
+      fs.unlinkSync(path.join(DIST_DIR, `xdg-open`));
+      fs.unlinkSync(path.join(DIST_DIR, `appIcon.png`));
     } catch (err) {
-      return console.error(`[build] Error processing index.js: ${err.message}`);
+      return console.error(
+        `[build] Error post-processing index.js: ${err.message}`
+      );
     }
-
-    continueBuild();
   }
 );
-
-function continueBuild() {
-  const DENO_JSON = path.join(DIST_DIR, "deno.json");
-  if (!fs.existsSync(DENO_JSON)) {
-    fs.writeFileSync(
-      DENO_JSON,
-      JSON.stringify(
-        {
-          compilerOptions: {
-            lib: ["deno.ns", "dom"],
-            types: ["npm:@types/node"],
-          },
-          nodeModulesDir: "auto",
-        },
-        null,
-        2
-      )
-    );
-  }
-
-  if (!fs.existsSync(path.join(DIST_DIR, "node_modules"))) {
-    const denoCommand =
-      "deno install --allow-net --allow-read -n my-builder ./build.ts";
-
-    exec(denoCommand, { cwd: DIST_DIR }, (err, stdout, stderr) => {
-      if (err) {
-        console.error("[build] Deno install failed:", err);
-        console.error("Stderr:", stderr);
-        return;
-      }
-      console.log("[build] Deno install successful.");
-    });
-  }
-
-  exec(
-    `pnpm exec deno compile --target x86_64-pc-windows-msvc --allow-read --allow-write --allow-run --allow-env --allow-sys --allow-net ${OUTPUT_JS} --output ${OUTPUT_EXE}`,
-    (error, stdout, stderr) => {
-      if (error)
-        return console.error(`[build] Deno compile error: ${error.message}`);
-      if (stderr) console.error(`[build] Deno compile stderr: ${stderr}`);
-      console.log(`[build] Deno compile stdout: ${stdout}`);
-      fs.renameSync(TEMP_EXE, "./dist/" + PLUGIN_NAME + ".exe");
-      if (fs.existsSync(TEMP_EXE)) fs.unlinkSync(TEMP_EXE);
-      if (fs.existsSync(LOCK_FILE)) fs.unlinkSync(LOCK_FILE);
-      if (fs.existsSync("./dist/xdg-open")) fs.unlinkSync("./dist/xdg-open");
-      if (fs.existsSync("./dist/appIcon.png"))
-        fs.unlinkSync("./dist/appIcon.png");
-
-      console.log(`[build] Build completo: ${OUTPUT_EXE}`);
-    }
-  );
-}

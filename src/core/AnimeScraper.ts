@@ -13,6 +13,9 @@ export default class AnimeScraper implements AnimeScraperAgreement {
     const page = await context.newPage();
     return new AnimeScraper(page, context);
   }
+  async newPage(): Promise<Page> {
+    return this.context.newPage();
+  }
 
   async close(): Promise<void> {
     await this.context.close();
