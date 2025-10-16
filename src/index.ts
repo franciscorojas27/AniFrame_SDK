@@ -29,55 +29,122 @@ const io = new Server(httpServer, { cors: { origin: "*" } });
 
 io.on("connection", (socket) => {
   socket.on("getHomePageListAnime", async (data, callback) => {
-    const result = await animeListScraper.getHomePageListAnime();
-    callback(result);
+    try {
+      const result = await animeListScraper.getHomePageListAnime();
+      callback({ success: true, content: result });
+    } catch (err) {
+      callback({ success: false, error: err });
+    }
   });
+
   socket.on("getSearchAnime", async (data, callback) => {
-    const result = await animeListScraper.getSearchAnimeResults(
-      data.args.query as string,
-      data.args.page as string,
-      {
-        genre: data.args.genres as string[],
-        status: data.args.status as string,
-        category: data.args.category as string,
-      }
-    );
-    callback(result);
+    try {
+      const result = await animeListScraper.getSearchAnimeResults(
+        data.args.query as string,
+        data.args.page as string,
+        {
+          genre: data.args.genres as string[],
+          status: data.args.status as string,
+          category: data.args.category as string,
+        }
+      );
+      callback({ success: true, content: result });
+    } catch (err) {
+      callback({ success: false, error: err });
+    }
   });
 
   socket.on("getCatalogListAnime", async (data, callback) => {
-    const result = await animeListScraper.getCatalogListAnime(
-      {
-        genre: data.genres as string[],
-        status: data.status as string,
-        category: data.category as string,
-      },
-      data.page as string
-    );
-    callback(result);
+    try {
+      const result = await animeListScraper.getCatalogListAnime(
+        {
+          genre: data.genres as string[],
+          status: data.status as string,
+          category: data.category as string,
+        },
+        data.page as string
+      );
+      callback({ success: true, content: result });
+    } catch (err) {
+      callback({ success: false, error: err });
+    }
   });
+
   socket.on("getEpisodeList", async (data, callback) => {
-    callback(await animeDetailsScraper.getEpisodeList(data.url as string));
+    try {
+      const result = await animeDetailsScraper.getEpisodeList(data.url as string);
+      callback({ success: true, content: result });
+    } catch (err) {
+      callback({ success: false, error: err });
+    }
   });
+
   socket.on("getAnimeDetails", async (data, callback) => {
-    callback(await animeDetailsScraper.getAnimeDetails(data.url as string));
+    try {
+      const result = await animeDetailsScraper.getAnimeDetails(data.url as string);
+      callback({ success: true, content: result });
+    } catch (err) {
+      callback({ success: false, error: err });
+    }
   });
+
   socket.on("getAnimeSchedule", async (data, callback) => {
-    callback(await animeScheduleScraper.getAnimeSchedule());
+    try {
+      const result = await animeScheduleScraper.getAnimeSchedule();
+      callback({ success: true, content: result });
+    } catch (err) {
+      callback({ success: false, error: err });
+    }
   });
+
   socket.on("getAnimeStreamingLinks", async (data, callback) => {
     try {
       const result = await animeStreamingScraper.getM3U8List(
         data.url as string[],
         Number(data.delay) || 10
       );
-      callback(result);
+      callback({ success: true, content: result });
     } catch (err) {
-      console.error(err);
+      callback({ success: false, error: err });
     }
   });
+
   socket.on("getManifest", async (data, callback) => {
-    callback(manifest);
+    try {
+      callback({ success: true, content: manifest });
+    } catch (err) {
+      callback({ success: false, error: err });
+    }
+  });
+
+  socket.onAny((eventName, ...args) => {
+    try {
+      if (eventName === 'error') return;
+      const EVENTOS_VALIDOS = new Set([
+        "getHomePageListAnime",
+        "getSearchAnime",
+        "getCatalogListAnime",
+        "getEpisodeList",
+        "getAnimeDetails",
+        "getAnimeSchedule",
+        "getAnimeStreamingLinks",
+        "getManifest"
+      ]);
+      if (!EVENTOS_VALIDOS.has(eventName)) {
+        const errorMessage = `Unknown event: ${eventName}`;
+        console.warn(`⚠️ Evento no reconocido en socket ${socket.id}: ${eventName}`);
+
+        const callback = args.find(arg => typeof arg === 'function');
+
+        if (callback) {
+          callback({ success: false, error: errorMessage });
+        } else {
+          socket.emit("error", { message: errorMessage });
+        }
+      }
+    } catch (err) {
+      console.error('Error handling event:', err);
+    }
   });
 });
 

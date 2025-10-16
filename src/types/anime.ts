@@ -1,4 +1,5 @@
 export type anime = {
+  animeId: string;
   name: string;
   cap: string;
   url: string;

@@ -1,4 +1,13 @@
-import { WeekDay, AnimeScheduleItem, animeCatalog } from "./anime.js";
+import { WeekDay, AnimeScheduleItem, animeCatalog, anime } from "./anime.js";
+
+
+export type responseAnimeHome = {
+  animeId: string;
+  name: string;
+  cap: string;
+  url: string;
+  urlImg: string | null;
+};
 
 export type responseM3U8 = {
   foundUrl?: string;

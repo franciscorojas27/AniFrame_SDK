@@ -4,14 +4,14 @@ import config from "../config/config.js";
 import { AnimeSelectors } from "../enums/selectors.js";
 import { AnimeListScraperAgreement } from "../types/agreement.js";
 import { logScraperError } from "../errors/errorsHelpers.js";
-import { responseAnimeResult } from "../types/responseAgreement.js";
+import { responseAnimeHome, responseAnimeResult } from "../types/responseAgreement.js";
 import { anime, animeCatalog } from "../types/anime.js";
 import { Filter } from "../types/filter.js";
 import AnimeScraper from "./AnimeScraper.js";
 export default class AnimeListScraper implements AnimeListScraperAgreement {
-  constructor(private scraper: AnimeScraper) {}
+  constructor(private scraper: AnimeScraper) { }
 
-  async getHomePageListAnime(): Promise<anime[]> {
+  async getHomePageListAnime(): Promise<responseAnimeHome[]> {
     try {
       await this.scraper.page.goto(config.urlPage, {
         waitUntil: "domcontentloaded",
@@ -31,8 +31,8 @@ export default class AnimeListScraper implements AnimeListScraperAgreement {
         ]);
         url = url ? new UrlBuilder(url).build().toString() : "";
         urlImg = urlImg ? urlImg : "";
-
-        result.push({ name, url, urlImg, cap });
+        let animeId = extractIdfromUrl(urlImg)
+        result.push({ animeId, name, url, urlImg, cap });
       }
       return result;
     } catch (error) {
