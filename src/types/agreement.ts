@@ -17,12 +17,12 @@ export interface AnimeListScraperAgreement {
   getHomePageListAnime(): Promise<anime[]>;
   getSearchAnimeResults(
     query?: string,
-    numberPage?: string,
+    numberPage?: number,
     filter?: Filter
   ): Promise<responseAnimeResult>;
   getCatalogListAnime(
     filter?: Filter,
-    numberPage?: string
+    numberPage?: number
   ): Promise<responseAnimeResult>;
 }
 export interface AnimeStreamingScraperAgreement {

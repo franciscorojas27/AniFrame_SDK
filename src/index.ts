@@ -41,7 +41,7 @@ io.on("connection", (socket) => {
     try {
       const result = await animeListScraper.getSearchAnimeResults(
         data.args.query as string,
-        data.args.page as string,
+        data.args.page as number,
         {
           genre: data.args.genres as string[],
           status: data.args.status as string,
@@ -62,7 +62,7 @@ io.on("connection", (socket) => {
           status: data.status as string,
           category: data.category as string,
         },
-        data.page as string
+        data.page as number
       );
       callback({ success: true, content: result });
     } catch (err) {
@@ -72,7 +72,7 @@ io.on("connection", (socket) => {
 
   socket.on("getEpisodeList", async (data, callback) => {
     try {
-      const result = await animeDetailsScraper.getEpisodeList(data.url as string);
+      const result = await animeDetailsScraper.getEpisodeList(data.slug as string);
       callback({ success: true, content: result });
     } catch (err) {
       callback({ success: false, error: err });
@@ -81,7 +81,7 @@ io.on("connection", (socket) => {
 
   socket.on("getAnimeDetails", async (data, callback) => {
     try {
-      const result = await animeDetailsScraper.getAnimeDetails(data.url as string);
+      const result = await animeDetailsScraper.getAnimeDetails(data.slug as string);
       callback({ success: true, content: result });
     } catch (err) {
       callback({ success: false, error: err });

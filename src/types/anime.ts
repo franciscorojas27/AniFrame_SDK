@@ -1,31 +1,31 @@
 export type anime = {
-  animeId: string;
-  name: string;
-  cap: string;
-  url: string;
-  urlImg: string | null;
-};
+  id: number
+  name: string
+  cap: number
+  slug: string
+  urlImg: string | null
+}
 
 export type animeCatalog = {
-  animeId: string;
-  name: string;
-  url: string;
-  urlImg: string | null;
-};
+  id: number
+  name: string
+  slug: string
+  urlImg: string | null
+}
 
 export interface AnimeScheduleItem {
-  animeId: string | undefined;
-  name: string;
-  url: string;
-  imgUrl: string | null;
-  updateTimeAnime: string | null;
+  id: number | undefined
+  name: string
+  url: string
+  imgUrl: string | null
+  updateTimeAnime: string | null
 }
 
 export type WeekDay =
-  | "lunes"
-  | "martes"
-  | "miercoles"
-  | "jueves"
-  | "viernes"
-  | "sabado"
-  | "domingo";
+  | 'lunes'
+  | 'martes'
+  | 'miercoles'
+  | 'jueves'
+  | 'viernes'
+  | 'sabado'
+  | 'domingo'
