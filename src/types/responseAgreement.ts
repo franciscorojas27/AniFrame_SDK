@@ -5,7 +5,7 @@ export type responseAnimeHome = {
   name: string
   cap: number
   slug: string
-  urlImg: string | null
+  imgUrl: string | null
 }
 
 export type responseM3U8 = {
@@ -16,7 +16,7 @@ export type responseM3U8 = {
 export type responseAnimeDetails = {
   id: number
   name: string
-  urlImg: string | null
+  imgUrl: string | null
   description: string | null
   status: string
   date: number

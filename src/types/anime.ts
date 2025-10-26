@@ -3,14 +3,14 @@ export type anime = {
   name: string
   cap: number
   slug: string
-  urlImg: string | null
+  imgUrl: string | null
 }
 
 export type animeCatalog = {
   id: number
   name: string
   slug: string
-  urlImg: string | null
+  imgUrl: string | null
 }
 
 export interface AnimeScheduleItem {

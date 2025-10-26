@@ -19,11 +19,12 @@ export default class AnimeDetailsScraper
   constructor(private scraper: AnimeScraper) {}
   async getAnimeDetails(slug: string): Promise<responseAnimeDetails> {
     try {
+
       const url = `${config.urlPage}/media/${slug}`
       await this.scraper.page.goto(url, { waitUntil: 'domcontentloaded' })
       const heroInfo = this.scraper.page.locator(AnimeSelectors.DetailsHero)
 
-      let [name, spans, genres, description, urlImg, caps] = await Promise.all([
+      let [name, spans, genres, description, imgUrl, caps] = await Promise.all([
         heroInfo.locator(AnimeSelectors.DetailsName).innerText(),
         heroInfo.locator(AnimeSelectors.DetailsSpans).allInnerTexts(),
         heroInfo.locator(AnimeSelectors.DetailsGenres).allInnerTexts(),
@@ -40,7 +41,7 @@ export default class AnimeDetailsScraper
         .replace(/[\u0300-\u036f]/g, '')
         .toLowerCase()
       genres = genres.map((str) => str.trim())
-      const id = extractIdfromUrl(urlImg || '')
+      const id = extractIdfromUrl(imgUrl || '')
       return {
         id,
         name,
@@ -49,7 +50,7 @@ export default class AnimeDetailsScraper
         date,
         status,
         caps,
-        urlImg,
+        imgUrl,
       }
     } catch (err) {
       logScraperError(err)
@@ -77,8 +78,6 @@ export default class AnimeDetailsScraper
           return { capLink: config.urlPage + href, capThumbnail: src }
         }),
       )
-      console.log(episodes)
-
       return episodes
     } catch (err) {
       logScraperError(err)

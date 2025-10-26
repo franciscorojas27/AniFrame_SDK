@@ -26,22 +26,16 @@ export default class AnimeListScraper implements AnimeListScraperAgreement {
       const result: anime[] = []
 
       for (let i = 0; i < count; i++) {
-        let [name, slug, urlImg, cap] = await Promise.all([
+        let [name, slug, imgUrl, cap] = await Promise.all([
           articles.nth(i).locator(AnimeSelectors.HomeName).innerText(),
           articles.nth(i).locator(AnimeSelectors.HomeLink).getAttribute('href'),
           articles.nth(i).locator(AnimeSelectors.HomeImg).getAttribute('src'),
           articles.nth(i).locator(AnimeSelectors.HomeCap).innerText(),
         ])
-        if (slug && typeof slug === 'string') {
-          const cleaned = slug.split(/[?#]/)[0].replace(/\/+$/, '')
-          const segments = cleaned.split('/')
-          slug = segments.pop() ?? ''
-        } else {
-          slug = ''
-        }
-        urlImg = urlImg ? urlImg : ''
-        let id = extractIdfromUrl(urlImg)
-        result.push({ id, name, slug, urlImg, cap: parseInt(cap) })
+        slug = slug ? slug.split('/').at(2) || '' : ' '
+        imgUrl = imgUrl ? imgUrl : ''
+        let id = extractIdfromUrl(imgUrl)
+        result.push({ id, name, slug, imgUrl, cap: parseInt(cap) })
       }
       return result
     } catch (error) {
@@ -70,7 +64,7 @@ export default class AnimeListScraper implements AnimeListScraperAgreement {
       const result: animeCatalog[] = []
 
       for (let i = 0; i < count; i++) {
-        let [name, slug, urlImg] = await Promise.all([
+        let [name, slug, imgUrl] = await Promise.all([
           articles.nth(i).locator(AnimeSelectors.SearchName).innerText(),
           articles
             .nth(i)
@@ -78,10 +72,9 @@ export default class AnimeListScraper implements AnimeListScraperAgreement {
             .getAttribute('href'),
           articles.nth(i).locator(AnimeSelectors.SearchImg).getAttribute('src'),
         ])
-
-        slug = slug ? (slug.split('/').pop() ?? '') : ''
-        let id = extractIdfromUrl(urlImg || '')
-        result.push({ id, name, slug, urlImg })
+        slug = slug ? slug.split('/').at(2) || '' : ' '
+        let id = extractIdfromUrl(imgUrl || '')
+        result.push({ id, name, slug, imgUrl })
       }
       return { results: result as animeCatalog[], numberPages }
     } catch (error) {
@@ -99,7 +92,6 @@ export default class AnimeListScraper implements AnimeListScraperAgreement {
         .withPage(numberPage)
         .withFilters(filter)
         .build()
-      console.log(url.toString())
       await this.scraper.page.goto(url.toString(), {
         waitUntil: 'domcontentloaded',
       })
@@ -108,7 +100,7 @@ export default class AnimeListScraper implements AnimeListScraperAgreement {
       const count = await articles.count()
       const result: animeCatalog[] = []
       for (let i = 0; i < count; i++) {
-        let [name, slug, urlImg] = await Promise.all([
+        let [name, slug, imgUrl] = await Promise.all([
           articles.nth(i).locator(AnimeSelectors.CatalogName).innerText(),
           articles
             .nth(i)
@@ -121,8 +113,8 @@ export default class AnimeListScraper implements AnimeListScraperAgreement {
         ])
         slug = slug ? (slug.split('/').pop() ?? '') : ''
 
-        let id = extractIdfromUrl(urlImg || '')
-        result.push({ id, name, slug, urlImg })
+        let id = extractIdfromUrl(imgUrl || '')
+        result.push({ id, name, slug, imgUrl })
       }
       return { results: result as animeCatalog[], numberPages }
     } catch (error) {
