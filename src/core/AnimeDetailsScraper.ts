@@ -19,7 +19,6 @@ export default class AnimeDetailsScraper
   constructor(private scraper: AnimeScraper) {}
   async getAnimeDetails(slug: string): Promise<responseAnimeDetails> {
     try {
-
       const url = `${config.urlPage}/media/${slug}`
       await this.scraper.page.goto(url, { waitUntil: 'domcontentloaded' })
       const heroInfo = this.scraper.page.locator(AnimeSelectors.DetailsHero)

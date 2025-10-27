@@ -1,5 +1,5 @@
 export default {
-  urlPage: process.env.URL_PAGE_TO_SCRAPP ?? "https://animeav1.com/",
+  urlPage: process.env.URL_PAGE_TO_SCRAPP ?? "https://animeav1.com",
   numberAnimesPerPage: Number(process.env.NUMBER_ANIMES_PER_PAGE) || 20,
   userAgent:
     process.env.USER_AGENT ??
