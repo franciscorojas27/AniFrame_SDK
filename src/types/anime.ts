@@ -6,12 +6,7 @@ export type anime = {
   imgUrl: string | null
 }
 
-export type animeCatalog = {
-  id: number
-  name: string
-  slug: string
-  imgUrl: string | null
-}
+export type animeCatalog = Omit<anime, 'cap'>
 
 export interface AnimeScheduleItem {
   id: number | undefined
