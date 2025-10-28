@@ -21,7 +21,7 @@
     "anime"
   ],
   "author": "Francisco Rojas",
-  "license": "ISC",
+  "license": "MIT",
   "packageManager": "pnpm@10.17.1",
   "dependencies": {
     "playwright": "^1.55.1",
