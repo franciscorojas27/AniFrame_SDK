@@ -1,4 +1,4 @@
-# AniFrame SDK (animeav1)
+# AniFrame SDK
 
 SDK/servidor para obtener listados, detalles, horarios y enlaces de streaming de anime vía Socket.IO. Incluye un servidor HTTP con WebSocket que expone eventos específicos para consumir desde tus apps.
 
